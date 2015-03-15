@@ -16,6 +16,9 @@ public class MainActivity extends ActionBarActivity {
         TextView tv = new TextView(this);
         tv.setText(HelloJNI());
         setContentView(tv);
+        while ( 1>0){
+            tv.setText(HelloJNI());
+        }
     }
 
 

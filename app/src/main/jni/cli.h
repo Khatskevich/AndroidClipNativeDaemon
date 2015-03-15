@@ -326,11 +326,16 @@ int VbglR3ClipboardWriteData(uint32_t u32ClientId, uint32_t fFormat, void *pv, u
     VbglHGCMParmUInt32Set(&Msg.format, fFormat);
     VbglHGCMParmPtrSet(&Msg.ptr, pv, cb);
 
-    int rc = ioctl( des , VBOXGUEST_IOCTL_HGCM_CALL(sizeof(Msg)), &Msg);
+    int rc = ioctl( des , VBOXGUEST_IOCTL_HGCM_CALL(sizeof(Msg)),
+ &Msg);
     if (RT_SUCCESS(rc))
         rc = Msg.hdr.result;
     return rc;
 }
+
+
+
+
 
 
 
@@ -373,19 +378,6 @@ int mainloop()
             printf("Msg = MSG_READ_DATA\n");
 
 
-
-/**
- * Send guest clipboard data to the host.
- *
- * This is usually called in reply to a VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA message
- * from the host.
- *
- * @returns VBox status code.
- * @param   u32ClientId     The client id returned by VbglR3ClipboardConnect().
- * @param   fFormat         The format of the data.
- * @param   pv              The data.
- * @param   cb              The size of the data.
- */
 //int VbglR3ClipboardWriteData(uint32_t u32ClientId, uint32_t fFormat, void *pv, uint32_t cb)
     char valera[] = {'B', '\0',' ', '\0','s', '\0','o', '\0','s', '\0','e', '\0','t', '\0','0', '\0', };
    rc = VbglR3ClipboardWriteData( client, 1 , valera , 16);
@@ -405,15 +397,6 @@ int mainloop()
             printf("Msg = error\n");
         }
 
-
-
-/**
- * Advertises guest clipboard formats to the host.
- *
- * @returns VBox status code.
- * @param   u32ClientId     The client id returned by VbglR3ClipboardConnect().
- * @param   fFormats        The formats to advertise.
- */
     //int VbglR3ClipboardReportFormats(uint32_t u32ClientId, uint32_t fFormats)
 
    rc = VbglR3ClipboardReportFormats(client, 1);
