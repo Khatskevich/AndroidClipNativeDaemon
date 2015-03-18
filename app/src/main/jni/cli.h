@@ -348,7 +348,6 @@ int mainloop()
     uint32_t Msg;
     uint32_t u32Msg;
     uint32_t fFormats;
-    int result ;
     
     while(1){ // getting messages from the host
         rc = VbglR3ClipboardGetHostMsg(client, &Msg, &fFormats);

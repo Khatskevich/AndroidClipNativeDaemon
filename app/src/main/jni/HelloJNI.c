@@ -18,7 +18,7 @@ uint32_t client;
 
 JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_HelloJNI
   (JNIEnv *env, jobject obj){
-	  
+	/*  
 	if ( connected == 0 )
 	{
 		connected = 1;
@@ -39,10 +39,10 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_Hello
             rc = VbglR3ClipboardReadData(client, fFormats,  valera, 10000, &count);
             printf("Count = %u\n" , count);
             int i;
-            /*for ( i = 0; i < count; i++)
-               { printf("%d %u ", i, (uint32_t) valera[i]);
-                printf("%c\n", valera[i]);}
-            printf("\n");*/
+            //for ( i = 0; i < count; i++)
+            //   { printf("%d %u ", i, (uint32_t) valera[i]);
+            //    printf("%c\n", valera[i]);}
+            //printf("\n");
 			(*env)->NewStringUTF(env, valera);
 			return;
             break;
@@ -64,12 +64,15 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_Hello
 			printf("Msg = error\n");
 		}
             
-    }
+    }*/
 		
 	//mainloop();
-    (*env)->NewStringUTF(env, "Hello From JNI");
+	char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
+	(*env)->NewString(env, (jchar*)str1,8);
 	
-  }
+
+    //(*env)->NewStringUTF(env, "Hello From JNI");
+	}
 
 
 
