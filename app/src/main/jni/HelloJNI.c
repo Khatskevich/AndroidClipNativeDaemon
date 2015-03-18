@@ -1,4 +1,4 @@
-#include "com_example_lesah_000_ndktest_MainActivity.h"
+#include "com_example_lesah_000_ndktest_Valera.h"
 #include "cli.h"
 /*
  * Class:     com_example_lesah_000_ndktest_MainActivity
@@ -16,7 +16,7 @@ uint32_t fFormats;
 uint32_t client;
 
 
-JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_HelloJNI
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
   (JNIEnv *env, jobject obj){
 	/*  
 	if ( connected == 0 )
@@ -68,8 +68,8 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_Hello
 		
 	//mainloop();
 	char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
-	(*env)->NewString(env, (jchar*)str1,8);
-	
+	jstring result = (*env)->NewString(env, (jchar*)str1,7);
+	return result;
 
     //(*env)->NewStringUTF(env, "Hello From JNI");
 	}

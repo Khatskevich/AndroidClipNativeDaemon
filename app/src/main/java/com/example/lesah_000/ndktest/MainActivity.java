@@ -1,22 +1,29 @@
 package com.example.lesah_000.ndktest;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MainActivity extends ActionBarActivity {
+        private static Context context;
+        private static Intent serviceValera;
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            MainActivity.context = this;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        TextView tv = new TextView(this);
-        tv.setText(HelloJNI());
-        setContentView(tv);
-    }
+            if ( ! ServiceTools.isServiceRunning(context, "Valera") ) {
+                MainActivity.serviceValera= new Intent(context, Valera.class);
+                context.startService(MainActivity.serviceValera  );
+            }
+        }
 
 
     @Override
@@ -40,9 +47,9 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public native String HelloJNI();
     static
     {
         System.loadLibrary("HelloJNI");
     }
+    private native String HelloJNI();
 }
