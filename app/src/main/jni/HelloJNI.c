@@ -18,7 +18,7 @@ uint32_t client;
 
 JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
   (JNIEnv *env, jobject obj){
-	/*  
+	 
 	if ( connected == 0 )
 	{
 		connected = 1;
@@ -31,28 +31,27 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
         {
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS:
         {
-            printf("Msg = MSG_FORMATS\n");
-
-            char valera[10000];
+            //printf("Msg = MSG_FORMATS\n");
+            //printf("fFormats =  %u\n" , fFormats);
+			char valera[10000];
             uint32_t count;
-            printf("fFormats =  %u\n" , fFormats);
             rc = VbglR3ClipboardReadData(client, fFormats,  valera, 10000, &count);
-            printf("Count = %u\n" , count);
-            int i;
+            //printf("Count = %u\n" , count);
+            //int i;
             //for ( i = 0; i < count; i++)
             //   { printf("%d %u ", i, (uint32_t) valera[i]);
             //    printf("%c\n", valera[i]);}
             //printf("\n");
-			(*env)->NewStringUTF(env, valera);
-			return;
+			jstring result = (*env)->NewString(env, (jchar*)valera,count / 2 );
+			return result;
             break;
         }
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA:
         {
-            printf("Msg = MSG_READ_DATA\n");
+            //printf("Msg = MSG_READ_DATA\n");
 			//int VbglR3ClipboardWriteData(uint32_t u32ClientId, uint32_t fFormat, void *pv, uint32_t cb)
-			char valera[] = {'B', '\0',' ', '\0','s', '\0','o', '\0','s', '\0','e', '\0','t', '\0','0', '\0', };
-			rc = VbglR3ClipboardWriteData( client, 1 , valera , 16);
+			char valera[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
+			rc = VbglR3ClipboardWriteData( client, 1 , valera , 7);
             break;
         }
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT:
@@ -64,12 +63,12 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
 			printf("Msg = error\n");
 		}
             
-    }*/
+    }
 		
 	//mainloop();
-	char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
-	jstring result = (*env)->NewString(env, (jchar*)str1,7);
-	return result;
+	//char str1[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
+	//jstring result = (*env)->NewString(env, (jchar*)str1,7);
+	//return result;
 
     //(*env)->NewStringUTF(env, "Hello From JNI");
 	}

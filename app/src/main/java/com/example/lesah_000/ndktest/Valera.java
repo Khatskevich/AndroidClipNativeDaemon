@@ -23,13 +23,7 @@ public class Valera extends IntentService {
 
         String dataString = workIntent.getDataString();
         while(1>0) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             ClipboardManager clipboard = (ClipboardManager) this.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
-
             ClipData clip = ClipData.newPlainText("simple text", HelloJNI()  );
             clipboard.setPrimaryClip(clip);
         }
