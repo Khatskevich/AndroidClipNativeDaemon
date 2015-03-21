@@ -1,28 +1,42 @@
 package com.example.lesah_000.ndktest;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
-
-public class MainActivity extends ActionBarActivity {
-        private static Context context;
+public class MainActivity extends Activity {
         private static Intent serviceValera;
+        private static Intent serviceClipListener;
+        public ClipboardManager mClipboard;
+        public Context context;
+        private Handler handler = new Handler();
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-            MainActivity.context = this;
+            context = this;
 
             if ( ! ServiceTools.isServiceRunning(context, "Valera") ) {
                 MainActivity.serviceValera= new Intent(context, Valera.class);
                 context.startService(MainActivity.serviceValera  );
             }
+            /*if ( ! ServiceTools.isServiceRunning(context, "ClipListener") ) {
+                MainActivity.serviceClipListener = new Intent(context, ClipListener.class);
+                context.startService(MainActivity.serviceClipListener  );
+            }*/
+
+
+            context = getApplicationContext();
+            mClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            mClipboard.addPrimaryClipChangedListener(new ClipboardListener() );
+
         }
 
 
@@ -51,5 +65,22 @@ public class MainActivity extends ActionBarActivity {
     {
         System.loadLibrary("HelloJNI");
     }
-    private native String HelloJNI();
+
+
+    class ClipboardListener implements ClipboardManager.OnPrimaryClipChangedListener
+    {
+        public void onPrimaryClipChanged()
+        {
+            final int ret = DataAvailableJNI();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Clip provides data ret = "+ ret, Toast.LENGTH_SHORT).show();
+                }
+            });
+            System.out.println( "DataAvailableJNI" );
+        }
+    }
+
+    public native int DataAvailableJNI();
 }

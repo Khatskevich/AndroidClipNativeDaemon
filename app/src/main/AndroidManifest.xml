@@ -18,5 +18,7 @@
         </activity>
         <service android:name=".Valera"  android:exported="false">
         </service>
+        <service android:name=".ClipListener"  android:exported="false">
+        </service>
     </application>
 </manifest>

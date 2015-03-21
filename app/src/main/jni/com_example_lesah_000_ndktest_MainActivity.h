@@ -57,18 +57,12 @@ extern "C" {
 #define com_example_lesah_000_ndktest_MainActivity_DEFAULT_KEYS_SEARCH_LOCAL 3L
 #undef com_example_lesah_000_ndktest_MainActivity_DEFAULT_KEYS_SEARCH_GLOBAL
 #define com_example_lesah_000_ndktest_MainActivity_DEFAULT_KEYS_SEARCH_GLOBAL 4L
-#undef com_example_lesah_000_ndktest_MainActivity_HONEYCOMB
-#define com_example_lesah_000_ndktest_MainActivity_HONEYCOMB 11L
-#undef com_example_lesah_000_ndktest_MainActivity_MSG_REALLY_STOPPED
-#define com_example_lesah_000_ndktest_MainActivity_MSG_REALLY_STOPPED 1L
-#undef com_example_lesah_000_ndktest_MainActivity_MSG_RESUME_PENDING
-#define com_example_lesah_000_ndktest_MainActivity_MSG_RESUME_PENDING 2L
 /*
  * Class:     com_example_lesah_000_ndktest_MainActivity
- * Method:    HelloJNI
- * Signature: ()Ljava/lang/String;
+ * Method:    DataAvailableJNI
+ * Signature: ()I
  */
-JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_HelloJNI
+JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_DataAvailableJNI
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
