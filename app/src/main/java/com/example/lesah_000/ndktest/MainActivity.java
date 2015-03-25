@@ -73,16 +73,22 @@ public class MainActivity extends Activity {
         public void onPrimaryClipChanged()
         {
             ClipData abc = mClipboard.getPrimaryClip();
-            final String label = abc.getDescription().getLabel().toString();
-            if ( label.contentEquals("VBOX_CLIP_DATA"))
-            {
-                return;
+
+
+
+            try {
+                final String label = abc.getDescription().getLabel().toString();
+                if ( label.contentEquals("VBOX_CLIP_DATA"))
+                {
+                    return;
+                }
+            }catch (Exception e){
             }
             final int ret = DataAvailableJNI();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, "Clip provides data ret = "+ ret + " lebel = " + label, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Clip provides data ret = "+ ret , Toast.LENGTH_SHORT).show();
                 }
             });
             System.out.println( "DataAvailableJNI" );

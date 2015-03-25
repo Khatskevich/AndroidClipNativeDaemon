@@ -1,6 +1,7 @@
 #include "com_example_lesah_000_ndktest_Valera.h"
 #include "cli.h"
-
+#include <stdio.h>
+#include <string.h>
 //#include "base/android/jni_string.h"
 //#include "base/strings/utf_string_conversions.h"
 
@@ -10,7 +11,12 @@
  * Signature: ()Ljava/lang/String;
  */
 
-
+#define LOGGING1
+#ifdef LOGGING
+#define LOG(x, ... ) do{fprintf(log_file, x , ##__VA_ARGS__ );fflush(log_file);}while(0)
+#else
+#define LOG(x, ... ) do{}while(0)
+#endif //LOGGING
 int des=0;
 int connected = 0;
 int rc = 0;
@@ -18,40 +24,54 @@ uint32_t Msg;
 uint32_t u32Msg;
 uint32_t fFormats;
 uint32_t client;
+FILE* log_file;
 
 
-JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
-  (JNIEnv *env, jobject obj){
-	 
+int VbClipConnect(){
 	if ( connected == 0 )
 	{
 		connected = 1;
 		des = open("/dev/vboxguest", O_RDWR );
-		printf("Descriptor = %d\n", des);
-		VbglR3ClipboardConnect(&client);
+		
+		#ifdef LOGGING
+		log_file = fopen( "/mnt/sdcard/log_lesa", "w");
+		//if ( log_des < 1 ) sleep(5);
+		LOG("Descriptor = %d\n", des);
+		#endif
+		return VbglR3ClipboardConnect(&client);
+		
 	}
+}
+
+JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
+  (JNIEnv *env, jobject obj){
+	 
+	VbClipConnect();
+	
 	rc = VbglR3ClipboardGetHostMsg(client, &Msg, &fFormats);
+	
 	switch( Msg)
         {
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS:
         {
-            //printf("Msg = MSG_FORMATS\n");
-            //printf("fFormats =  %u\n" , fFormats);
+			LOG("IN VBOX_SHARED_CLIPBOARD_HOST_MSG_FORMATS\n");
+            LOG("Msg = MSG_FORMATS\n");
+            LOG("fFormats =  %u\n" , fFormats);
 			char valera[10000];
             uint32_t count;
-            rc = VbglR3ClipboardReadData(client, fFormats,  valera, 10000, &count);
-            //printf("Count = %u\n" , count);
-            //int i;
-            //for ( i = 0; i < count; i++)
-            //   { printf("%d %u ", i, (uint32_t) valera[i]);
-            //    printf("%c\n", valera[i]);}
-            //printf("\n");
+			if ( fFormats == 0 ){
+				 return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
+			}
+            rc = VbglR3ClipboardReadData(client, fFormats, (void*) valera, 10000, &count);
+			LOG("VbglR3ClipboardReadData retval = %d\n", rc);
+			
 			jstring result = (*env)->NewString(env, (jchar*)valera,count / 2 );
 			return result;
             break;
         }
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA:
         {
+			LOG("IN VBOX_SHARED_CLIPBOARD_HOST_MSG_READ_DATA\n");
 			char valera[] = {0x1f,0x4,0x40,0x4,0x38, 0x4, 0x32, 0x4, 0x35, 0x4, 0x42, 0x4, 0x21, 0, 0, 0};
 			jstring result = (*env)->NewString(env, (jchar*)valera,0 );
 			return result;
@@ -62,14 +82,15 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
         }
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT:
         {
-            printf("Msg = MSG_QUIT\n");
+            LOG("Msg = MSG_QUIT\n");
 			//return throwOutOfMemoryError( env, "throwNoSuchMethodError: VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIVBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT" );
-			return (*env)->ThrowNew( env, NULL, NULL );
+			return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
             break;
         }
         default:{
+			LOG("IN case default\n");
 			//return throwOutOfMemoryError( env, "throwNoSuchMethodError: Default case" );
-			return (*env)->ThrowNew( env, NULL, NULL );
+			return (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "");
 			printf("Msg = error\n");
 		}
             
@@ -84,52 +105,40 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
 	}
 	
 	JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_Valera_DataAvailableJNI(JNIEnv * env, jobject obj){
-		
-	  int rc = VbglR3ClipboardReportFormats(client, TEXT);
-	  jint ret = 0;
-	  return ret;
+		VbClipConnect();
+		LOG("IN VbglR3ClipboardReportFormats\n");
+		int rc = VbglR3ClipboardReportFormats(client, TEXT);
+		jint ret = 0;
+		return ret;
   }
   
   JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_ClipListener_DataAvailableJNI(JNIEnv * env, jobject obj){
 	  
-	if ( connected == 0 )//&&&&&&&&&&&&&&&&&
-	{
-		connected = 1;
-		des = open("/dev/vboxguest", O_RDWR );
-		printf("Descriptor = %d\n", des);
-		VbglR3ClipboardConnect(&client);
-	}
-	  
- 	  int rc = VbglR3ClipboardReportFormats(client, TEXT);
-	  jint ret = 0;
-	  return ret;
+		VbClipConnect();
+		int rc = VbglR3ClipboardReportFormats(client, TEXT);
+		jint ret = 0;
+		return ret;
   }
   
   
 JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_DataAvailableJNI(JNIEnv * env, jobject obj){
-	  
-	if ( connected == 0 )//&&&&&&&&&&&&&&&&&
-	{
-		connected = 1;
-		des = open("/dev/vboxguest", O_RDWR );
-		printf("Descriptor = %d\n", des);
-		VbglR3ClipboardConnect(&client);
-	}
-	  printf("Main Activity Data Available connected = %d\n",connected );
-	  printf("Main Activity Data Available client = %d\n",client );
- 	  int rc = VbglR3ClipboardReportFormats(client, 1);
-	  jint ret = rc;
-	  return ret;
+	  	LOG("Main Activity Data Available connected = %d\n",connected );
+		LOG("Main Activity Data Available client = %d\n",client );
+		VbClipConnect();
+
+		int rc = VbglR3ClipboardReportFormats(client, 1);
+		jint ret = rc;
+		return ret;
   }
   
   
 
   JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_Valera_DataSendToHostJNI (JNIEnv * env, jobject obj, jstring str){
-	
+	VbClipConnect();
 	jint ret = 0;
 	//const jsize len      = (*env)->GetStringUTFLength(env, bitmappath);
 	//printf("String valera sendig = %d\n", (int)len );
-	printf("Valera Data send to client\n");
+	LOG("Valera Data send to client\n");
 	const char* chars = (*env)->GetStringChars(env, str, NULL);
 	
 	int i=0;
@@ -145,7 +154,7 @@ JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_DataAvai
 			printf("%d = %d\n", j, chars[j]);
 			
 		}
-		rc = VbglR3ClipboardWriteData( client, 1 , chars , i);
+		rc = VbglR3ClipboardWriteData( client, 1 , (void*) chars , i);
 		ret= i;
 	}else{
 		ret = -1;
