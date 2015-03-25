@@ -63,9 +63,13 @@ JNIEXPORT jstring JNICALL Java_com_example_lesah_1000_ndktest_Valera_HelloJNI
         case VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT:
         {
             printf("Msg = MSG_QUIT\n");
+			//return throwOutOfMemoryError( env, "throwNoSuchMethodError: VBOX_SHARED_CLIPBOARD_HOST_MSG_QUIVBOX_SHARED_CLIPBOARD_HOST_MSG_QUIT" );
+			return (*env)->ThrowNew( env, NULL, NULL );
             break;
         }
         default:{
+			//return throwOutOfMemoryError( env, "throwNoSuchMethodError: Default case" );
+			return (*env)->ThrowNew( env, NULL, NULL );
 			printf("Msg = error\n");
 		}
             
@@ -135,6 +139,7 @@ JNIEXPORT jint JNICALL Java_com_example_lesah_1000_ndktest_MainActivity_DataAvai
 				break;
 			}
 		}
+		i+=2;
 		int j;
 		for( j = 0; j<i; j++){
 			printf("%d = %d\n", j, chars[j]);

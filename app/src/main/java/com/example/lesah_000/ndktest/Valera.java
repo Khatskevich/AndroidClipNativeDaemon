@@ -25,15 +25,20 @@ public class Valera extends IntentService {
     protected void onHandleIntent(Intent workIntent) {
         System.out.println("Valera working!");
         context = getApplicationContext();
-        mClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
+        //mClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        mClipboard = MainActivity.mClipboard;
         while(1>0) {
-
-            final String mesg = HelloJNI();
+            String msg;
+            try {
+                msg = HelloJNI();
+            }catch (Exception e){
+                msg = "";
+            }
+            final String mesg = msg;
             System.out.println("HelloJniMesg = " + mesg);
             System.out.println("HelloJniMesgLen = "+ mesg.length());
             if ( mesg.length()!=0 ) {
-                ClipData clip = ClipData.newPlainText("simple text", mesg);
+                ClipData clip = ClipData.newPlainText("VBOX_CLIP_DATA", mesg);
                 mClipboard.setPrimaryClip(clip);
                 handler.post(new Runnable() {
                     @Override
@@ -54,11 +59,11 @@ public class Valera extends IntentService {
                     }
                 });
             }
-            try {
+            /*try {
                 Thread.sleep(8000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
     private native String HelloJNI();

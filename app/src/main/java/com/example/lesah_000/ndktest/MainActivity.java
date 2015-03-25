@@ -14,7 +14,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
         private static Intent serviceValera;
         private static Intent serviceClipListener;
-        public ClipboardManager mClipboard;
+        public static ClipboardManager mClipboard;
         public Context context;
         private Handler handler = new Handler();
         @Override
@@ -22,6 +22,8 @@ public class MainActivity extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
             context = this;
+            context = getApplicationContext();
+            mClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
             if ( ! ServiceTools.isServiceRunning(context, "Valera") ) {
                 MainActivity.serviceValera= new Intent(context, Valera.class);
@@ -33,8 +35,7 @@ public class MainActivity extends Activity {
             }*/
 
 
-            context = getApplicationContext();
-            mClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
             mClipboard.addPrimaryClipChangedListener(new ClipboardListener() );
 
         }
@@ -71,11 +72,17 @@ public class MainActivity extends Activity {
     {
         public void onPrimaryClipChanged()
         {
+            ClipData abc = mClipboard.getPrimaryClip();
+            final String label = abc.getDescription().getLabel().toString();
+            if ( label.contentEquals("VBOX_CLIP_DATA"))
+            {
+                return;
+            }
             final int ret = DataAvailableJNI();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, "Clip provides data ret = "+ ret, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Clip provides data ret = "+ ret + " lebel = " + label, Toast.LENGTH_SHORT).show();
                 }
             });
             System.out.println( "DataAvailableJNI" );
